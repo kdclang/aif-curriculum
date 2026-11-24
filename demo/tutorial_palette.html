@@ -1,0 +1,243 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Tutorial Palette</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: two panes like the Designer. Palette (searchable, collapsible categories) on the left, tutorial cards for the selected component on the right. */
+:root{
+  --bg:#f3f5f8; --panel:#ffffff; --line:#d9dfe7; --fg:#1d2733; --muted:#5d6b7b;
+  --accent:#e8710a; --accent-soft:#fdeedd; --sel:#e3edf9; --sel-line:#8db4e6;
+  --c-ui:#3b7dd8; --c-layout:#7a6bd0; --c-media:#d9487a; --c-draw:#e08a1e; --c-maps:#2e9e6a;
+  --c-charts:#1f9bb0; --c-data:#6b8a2b; --c-sensors:#c4572f; --c-social:#a14fc0; --c-storage:#5a6b80; --c-conn:#2f7f86; --c-ext:#888f99;
+  --font-display:'Space Grotesk',system-ui,sans-serif; --font-body:'Inter',system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12171d; --panel:#1a212a; --line:#2b3541; --fg:#e6ebf1; --muted:#97a4b3;
+  --accent:#f59a45; --accent-soft:#3a2a18; --sel:#1f3350; --sel-line:#3d6aa8; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12171d; --panel:#1a212a; --line:#2b3541; --fg:#e6ebf1; --muted:#97a4b3;
+  --accent:#f59a45; --accent-soft:#3a2a18; --sel:#1f3350; --sel-line:#3d6aa8; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:14px/1.5 var(--font-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+header h1{font:700 24px/1.2 var(--font-display);margin:0;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--muted);max-width:65ch}
+.app{display:grid;grid-template-columns:280px minmax(0,1fr);gap:16px;align-items:start}
+.palette{background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:hidden;position:sticky;top:12px;max-height:calc(100vh - 24px);display:flex;flex-direction:column;min-height:0}
+.palette-head{padding:10px 12px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.palette-head b{font:600 12px var(--font-display);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.palette-head input{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--fg);font:inherit}
+.palette-head input:focus-visible,.cat-btn:focus-visible,.comp:focus-visible,.chip:focus-visible,.seg button:focus-visible,.card a:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.cats{overflow-y:auto;min-height:0}
+.cat-btn{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;cursor:pointer;font:600 13px var(--font-display);background:var(--bg);border-top:1px solid var(--line)}
+.cat-btn:first-child{border-top:0}
+.cat-btn .sw{width:10px;height:10px;border-radius:2px;background:var(--cc)}
+.cat-btn .caret{margin-left:auto;transition:transform .15s;color:var(--muted);font-size:11px}
+.cat[data-open="true"] .caret{transform:rotate(90deg)}
+.cat ul{list-style:none;margin:0;padding:2px 0 6px;display:none}
+.cat[data-open="true"] ul{display:block}
+.comp{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:8px;width:100%;padding:5px 12px 5px 28px;cursor:pointer;border-left:3px solid transparent}
+.comp:hover{background:var(--bg)}
+.comp .ic{width:14px;height:14px;border-radius:3px;border:2px solid var(--cc);flex:none}
+.comp .n{margin-left:auto;font-size:11px;font-weight:600;color:var(--accent);background:var(--accent-soft);border-radius:9px;padding:0 7px}
+.comp.none{color:var(--muted)}
+.comp[aria-pressed="true"]{background:var(--sel);border-left-color:var(--sel-line);font-weight:600}
+.results{display:flex;flex-direction:column;gap:12px;min-width:0}
+.results-head{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+.results-head h2{font:600 20px/1.25 var(--font-display);margin:0;min-width:0}
+.results-head h2 span{color:var(--muted);font-weight:500;font-size:14px;margin-left:6px}
+.seg{display:flex;border:1px solid var(--line);border-radius:5px;overflow:hidden;background:var(--panel)}
+.seg button{all:unset;box-sizing:border-box;padding:5px 11px;cursor:pointer;font-size:12px;border-left:1px solid var(--line)}
+.seg button:first-child{border-left:0}
+.seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:6px;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.thumb{aspect-ratio:16/9;background:var(--tint);display:block;width:100%;max-width:100%}
+.card-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px;flex:1;min-width:0}
+.card h3{font:600 16px/1.3 var(--font-display);margin:0}
+.card p{margin:0;color:var(--muted);font-size:13px}
+.meta{display:flex;gap:8px;align-items:center;font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.lvl{padding:1px 7px;border-radius:3px;border:1px solid var(--line);color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{all:unset;box-sizing:border-box;cursor:pointer;font-size:12px;padding:2px 8px;border-radius:3px;border:1px solid var(--line);display:inline-flex;align-items:center;gap:5px;background:var(--bg)}
+.chip i{width:8px;height:8px;border-radius:2px;background:var(--cc)}
+.chip:hover{border-color:var(--sel-line)}
+.chip.on{background:var(--sel);border-color:var(--sel-line);font-weight:600}
+.card a.go{margin-top:auto;font-weight:600;color:var(--accent);text-decoration:none;padding-top:4px}
+.card a.go:hover{text-decoration:underline}
+.empty{background:var(--panel);border:1px dashed var(--line);border-radius:6px;padding:28px 20px;color:var(--muted);text-align:center}
+.empty b{color:var(--fg);display:block;font:600 16px var(--font-display);margin-bottom:4px}
+.foot{color:var(--muted);font-size:12px;max-width:80ch}
+@media (max-width:760px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .palette{position:static;max-height:300px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Tutorial Palette</h1>
+    <p>Pick a component from the palette, just as you would in the Designer, to see the MIT App Inventor tutorials that use it.</p>
+  </header>
+  <div class="app">
+    <nav class="palette" aria-label="Component palette">
+      <div class="palette-head">
+        <b>Palette</b>
+        <input id="q" type="search" placeholder="Search components" autocomplete="off" aria-label="Search components">
+      </div>
+      <div class="cats" id="cats"></div>
+    </nav>
+    <main class="results">
+      <div class="results-head">
+        <h2 id="title"></h2>
+        <div class="seg" id="levels" role="group" aria-label="Difficulty"></div>
+      </div>
+      <div id="out"></div>
+      <p class="foot">Tutorial names and levels come from appinventor.mit.edu. Component lists are a best reading of each tutorial and card links go to the official tutorials index; edit the <code>TUTORIALS</code> array to add direct links and real screenshots.</p>
+    </main>
+  </div>
+</div>
+
+<script>
+var TUTORIALS_URL = "https://appinventor.mit.edu/explore/ai2/tutorials";
+var CATS = [
+ ["User Interface","--c-ui",["Button","CheckBox","DatePicker","Image","Label","ListPicker","ListView","Notifier","PasswordTextBox","Slider","Spinner","Switch","TextBox","TimePicker","WebViewer"]],
+ ["Layout","--c-layout",["HorizontalArrangement","HorizontalScrollArrangement","TableArrangement","VerticalArrangement","VerticalScrollArrangement"]],
+ ["Media","--c-media",["Camcorder","Camera","ChatBot","ImageBot","ImagePicker","Player","Sound","SoundRecorder","SpeechRecognizer","TextToSpeech","Translator","VideoPlayer"]],
+ ["Drawing and Animation","--c-draw",["Ball","Canvas","ImageSprite"]],
+ ["Maps","--c-maps",["Circle","FeatureCollection","LineString","Map","Marker","Polygon","Rectangle"]],
+ ["Charts","--c-charts",["Chart","ChartData2D","Trendline"]],
+ ["Data Science","--c-data",["AnomalyDetection","Regression"]],
+ ["Sensors","--c-sensors",["AccelerometerSensor","BarcodeScanner","Barometer","Clock","GyroscopeSensor","Hygrometer","LightSensor","LocationSensor","MagneticFieldSensor","NearField","OrientationSensor","Pedometer","ProximitySensor","Thermometer"]],
+ ["Social","--c-social",["ContactPicker","EmailPicker","PhoneCall","PhoneNumberPicker","Sharing","Texting","Twitter"]],
+ ["Storage","--c-storage",["CloudDB","DataFile","File","Spreadsheet","TinyDB","TinyWebDB"]],
+ ["Connectivity","--c-conn",["ActivityStarter","BluetoothClient","BluetoothServer","Serial","Web"]],
+ ["Extension","--c-ext",["FaceExtension"]]
+];
+var TUTORIALS = [
+ {t:"Hello Codi!",l:"Beginner",d:"The Hello World of App Inventor. Build a first app with a button that makes something happen.",c:["Button","Image","Sound"]},
+ {t:"Hello Purr",l:"Beginner",d:"The classic first exercise: tap the kitten and hear it purr. Covers the very basics of the Designer and Blocks.",c:["Button","Image","Sound"]},
+ {t:"TalkToMe",l:"Beginner",d:"A step-by-step picture tutorial for a talking app. Part 2 adds shaking the phone and typed user input.",c:["Button","TextBox","TextToSpeech","AccelerometerSensor"]},
+ {t:"BallBounce",l:"Beginner",d:"A simple game app: a ball moves across a canvas and bounces off the edges.",c:["Canvas","Ball"]},
+ {t:"DigitalDoodle",l:"Beginner",d:"A drawing app. Touch and drag on a canvas to doodle, with buttons to change the drawing.",c:["Canvas","Button"]},
+ {t:"Magic 8 Ball",l:"Basic",d:"Shake the phone for a random answer. Starts like Hello Purr, then extends the functionality.",c:["Image","Label","AccelerometerSensor","Sound"]},
+ {t:"MoleMash",l:"Basic",d:"Whack-a-mole style game: a mole jumps around the screen on a timer and you tap it to score.",c:["Canvas","ImageSprite","Clock","Label","Button"]},
+ {t:"PaintPot (Part 2)",l:"Basic",d:"Continues Paint Pot with more drawing controls. Finish Part 1 first.",c:["Canvas","Button"]},
+ {t:"Paint Pot Extended with Camera",l:"Intermediate",d:"Take a photo and use it as the background of the painting canvas.",c:["Canvas","Button","Camera"]},
+ {t:"PicCall",l:"Intermediate",d:"Use the phone's own features: pick a person from your contacts, see their picture and call them.",c:["ContactPicker","PhoneCall","Image","Label"]},
+ {t:"Get the Gold",l:"Intermediate",d:"A pirate ship collects the gold on the screen. Practice visibility, Clock timers and collision detection.",c:["Canvas","ImageSprite","Clock","Label"]},
+ {t:"Space Invaders",l:"Intermediate",d:"A 2-D arcade game for shooting flying saucers. Animate with Clock.Timer and react to collisions.",c:["Canvas","ImageSprite","Clock","Button"]},
+ {t:"Mini Golf",l:"Intermediate",d:"Fling, TouchUp and TouchDown gestures: flick a ball across the course toward the hole.",c:["Canvas","Ball","Clock","Label"]},
+ {t:"VideoWall",l:"Intermediate",d:"Play videos stored in the app (or from the internet) from a wall of buttons.",c:["VideoPlayer","Button"]},
+ {t:"No Text While Driving",l:"Intermediate",d:"A short video on the Sharing component: send text or files from your app to any messaging service on the device.",c:["Sharing","Button"]},
+ {t:"CloudDB Chat App",l:"Intermediate",d:"A shared chat room. Messages are stored in CloudDB and shown in a list for everyone using the app.",c:["CloudDB","ListView","TextBox","Button"]},
+ {t:"Colored Dots",l:"Advanced",d:"Draw colored dots on a canvas and explore touch events and drawing blocks.",c:["Canvas"]},
+ {t:"Map It",l:"Advanced",d:"Record a list of addresses and view them on a Google Map, plus your current location.",c:["Map","Marker","LocationSensor","TextBox","Button"]},
+ {t:"Exploring with Location Sensor",l:"Advanced",d:"Use the GPS receiver in a phone or tablet to read latitude, longitude and a street address.",c:["LocationSensor","Label","Clock"]},
+ {t:"MapTour",l:"Advanced",d:"A two-part tutorial introducing ActivityStarter for launching other Android apps and ListPicker for choosing from a list.",c:["ActivityStarter","ListPicker","TinyDB","Button"]},
+ {t:"TextGroup",l:"Advanced",d:"Introduces the Texting component. Build an app that texts a message to a list of phone numbers (two parts).",c:["Texting","ListView","TextBox","Button"]},
+ {t:"Broadcast Hub",l:"Advanced",d:"Automatically respond to incoming texts and broadcast them to a list of phone numbers.",c:["Texting","TinyDB","ListView","Button"]},
+ {t:"MakeQuiz and TakeQuiz",l:"Advanced",d:"Create both apps: one to author quiz questions and one to take the quiz.",c:["TinyDB","TextBox","Label","Button"]},
+ {t:"Firebase Authenticator",l:"Advanced",d:"Create a Firebase authenticator by running JavaScript through the WebViewer component.",c:["WebViewer","TextBox","Button"]},
+ {t:"Fake Voices: The Ethics of Deepfakes",l:"Beginner",d:"Explore synthetic media with an app that speaks in different voices by changing speech rate and pitch.",c:["TextToSpeech","Slider","TextBox","Button"]},
+ {t:"Simple ImageBot App",l:"Intermediate",d:"Type a prompt, send it to a generative image model and see the picture it makes.",c:["ImageBot","TextBox","Button","Image"]},
+ {t:"ImageBot App",l:"Advanced",d:"A fuller generative art app that connects to a text-to-image model and handles prompts and results.",c:["ImageBot","TextBox","Button","Image","Label"]},
+ {t:"GenAI Digital Doodle App",l:"Intermediate",d:"Combine a drawing canvas with a generative AI chatbot.",c:["ChatBot","Canvas","Button"]},
+ {t:"ChatGPT App",l:"Intermediate",d:"Connect an app to ChatGPT, ask questions and show the replies.",c:["ChatBot","TextBox","Button","Label"]},
+ {t:"Facemesh Filter Camera",l:"Intermediate",d:"Track a face with the camera and draw a filter on top of it.",c:["FaceExtension","Canvas","Camera"]}
+];
+
+var catOf = {}, catColor = {}, byComp = {};
+CATS.forEach(function(c){c[2].forEach(function(n){catOf[n]=c[0];catColor[n]=c[1]})});
+TUTORIALS.forEach(function(t,i){t.i=i;t.c.forEach(function(n){(byComp[n]=byComp[n]||[]).push(t)})});
+
+var state={comp:null,level:"All",open:{}};
+var LEVELS=["All","Beginner","Basic","Intermediate","Advanced"];
+var $=function(id){return document.getElementById(id)};
+function esc(s){return String(s).replace(/[&<>"]/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]})}
+function spaced(n){return n.replace(/([a-z])([A-Z])/g,"$1 $2")}
+function cvar(n){return "var("+(catColor[n]||"--c-ext")+")"}
+
+function thumb(t){
+  var cols=t.c.slice(0,5), parts=[];
+  var tint=cvar(t.c[0]);
+  var y=26;
+  parts.push('<rect x="0" y="0" width="160" height="90" fill="'+tint+'" opacity="0.14"/>');
+  parts.push('<rect x="52" y="6" width="56" height="80" rx="7" fill="var(--panel)" stroke="var(--line)" stroke-width="1.5"/>');
+  parts.push('<rect x="52" y="6" width="56" height="9" rx="4" fill="var(--c-storage)" opacity="0.25"/>');
+  cols.forEach(function(n,k){
+    var h=n==="Canvas"?22:10, col=cvar(n);
+    if(y+h>80)return;
+    if(n==="Canvas"){parts.push('<rect x="57" y="'+y+'" width="46" height="'+h+'" rx="2" fill="'+col+'" opacity="0.25" stroke="'+col+'" stroke-width="1"/>');parts.push('<circle cx="68" cy="'+(y+9)+'" r="3.5" fill="'+col+'"/>');}
+    else if(n==="Image"||n==="ImageSprite"){parts.push('<rect x="57" y="'+y+'" width="46" height="'+h+'" rx="2" fill="'+col+'" opacity="0.3"/>');}
+    else{parts.push('<rect x="57" y="'+y+'" width="46" height="'+h+'" rx="3" fill="'+col+'"/>');}
+    y+=h+4;
+  });
+  var label=esc(t.t);
+  return '<svg class="thumb" viewBox="0 0 160 90" role="img" aria-label="Screen sketch for '+label+'" style="--tint:transparent" preserveAspectRatio="xMidYMid slice">'+parts.join("")+'</svg>';
+}
+
+function buildPalette(){
+  var q=$("q").value.trim().toLowerCase(), h="";
+  CATS.forEach(function(c){
+    var comps=c[2].filter(function(n){return !q||n.toLowerCase().indexOf(q)>-1||spaced(n).toLowerCase().indexOf(q)>-1});
+    if(!comps.length)return;
+    var isOpen=q?true:(state.open[c[0]]!==undefined?state.open[c[0]]:(state.comp&&catOf[state.comp]===c[0]));
+    h+='<div class="cat" data-open="'+isOpen+'" style="--cc:var('+c[1]+')"><button class="cat-btn" data-cat="'+esc(c[0])+'" aria-expanded="'+isOpen+'"><span class="sw"></span>'+esc(c[0])+'<span class="caret">&#9656;</span></button><ul>';
+    comps.forEach(function(n){
+      var cnt=(byComp[n]||[]).length;
+      h+='<li><button class="comp'+(cnt?"":" none")+'" data-comp="'+n+'" aria-pressed="'+(state.comp===n)+'"><span class="ic"></span>'+esc(spaced(n))+(cnt?'<span class="n">'+cnt+'</span>':"")+'</button></li>';
+    });
+    h+='</ul></div>';
+  });
+  $("cats").innerHTML=h||'<div class="empty">No components match.</div>';
+}
+
+function render(){
+  var n=state.comp, list=(byComp[n]||[]);
+  var shown=list.filter(function(t){return state.level==="All"||t.l===state.level});
+  $("title").innerHTML=esc(spaced(n))+'<span>'+list.length+' tutorial'+(list.length===1?"":"s")+'</span>';
+  var present=LEVELS.filter(function(l){return l==="All"||list.some(function(t){return t.l===l})});
+  if(present.indexOf(state.level)<0){state.level="All";shown=list}
+  $("levels").innerHTML=present.map(function(l){return '<button data-level="'+l+'" aria-pressed="'+(state.level===l)+'">'+l+'</button>'}).join("");
+  $("levels").hidden=list.length<2;
+  if(!shown.length){
+    $("out").innerHTML='<div class="empty"><b>No tutorials use '+esc(spaced(n))+' yet</b>Add one to the TUTORIALS list, or try a related component from the palette.</div>';
+  } else {
+    $("out").innerHTML='<div class="grid">'+shown.map(function(t){
+      return '<article class="card">'+thumb(t)+'<div class="card-body"><div class="meta"><span class="lvl">'+t.l+'</span></div><h3>'+esc(t.t)+'</h3><p>'+esc(t.d)+'</p><div class="chips" aria-label="Components">'+
+        t.c.map(function(c){return '<button class="chip'+(c===n?" on":"")+'" data-comp="'+c+'" style="--cc:'+cvar(c)+'" title="Show tutorials using '+esc(spaced(c))+'"><i></i>'+esc(spaced(c))+'</button>'}).join("")+
+        '</div><a class="go" href="'+TUTORIALS_URL+'" target="_blank" rel="noopener">Open tutorial &rarr;</a></div></article>';
+    }).join("")+'</div>';
+  }
+  buildPalette();
+}
+
+function select(n,push){
+  state.comp=n; state.level="All";
+  state.open[catOf[n]]=true;
+  if(push!==false){try{history.replaceState(null,"","#"+n.toLowerCase())}catch(e){location.hash=n.toLowerCase()}}
+  render();
+}
+
+document.addEventListener("click",function(e){
+  var cb=e.target.closest("[data-cat]");
+  if(cb){var k=cb.getAttribute("data-cat");var cur=cb.parentNode.getAttribute("data-open")==="true";state.open[k]=!cur;buildPalette();return}
+  var cp=e.target.closest("[data-comp]");
+  if(cp){select(cp.getAttribute("data-comp"));return}
+  var lv=e.target.closest("[data-level]");
+  if(lv){state.level=lv.getAttribute("data-level");render()}
+});
+$("q").addEventListener("input",buildPalette);
+
+function fromHash(){
+  var h=(location.hash||"").slice(1).toLowerCase(), found=null;
+  CATS.forEach(function(c){c[2].forEach(function(n){if(n.toLowerCase()===h)found=n})});
+  return found;
+}
+window.addEventListener("hashchange",function(){var f=fromHash();if(f)select(f,false)});
+select(fromHash()||"Button",false);
+</script>
+
+</body></html>
